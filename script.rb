@@ -59,8 +59,16 @@ module Enumerable
     end
     true
   end
+
+  def my_map 
+    result=[]
+    for i in self
+      result.push(yield i)
+    end
+    result
+  end
 end
 
-array = [1, 2, 3, 4, 5, 6, 7, 8, 9]
+array = %w[hey hi howdy]
 
-puts array.my_select {|num| num%3 == 0} 
+puts array.my_map{|str| str.upcase} 
