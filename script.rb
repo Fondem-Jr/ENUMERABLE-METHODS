@@ -116,9 +116,15 @@ array = %w[1 2 3 4]
 #puts array.my_inject {|i, number| i * number}
 
 
-new= array.my_inject (Hash.new(0)) do |obj, num|
-    obj[num]= num.to_i * 2
-    obj
-  end
-puts new
+# new= array.my_inject (Hash.new(0)) do |obj, num|
+#     obj[num]= num.to_i * 2
+#     obj
+#   end
+# puts new
+
+def multiply_el (array)
+  array.my_inject {|ac ,num| ac * num}
+end
+
+puts multiply_el [2, 3, 6]
 
