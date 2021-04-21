@@ -49,6 +49,7 @@ def my_any?(array)
   false
 end
 
+
 def my_none?(array)
   i = 0
   while i < array.length
@@ -62,3 +63,7 @@ end
 
 array = [1, 1, 2, 2]
 puts my_none?(array) { |num| (num % 3).zero? }
+
+array = [1, 2, 4, 7]
+puts my_any?(array) { |num| (num % 3).zero? }
+
