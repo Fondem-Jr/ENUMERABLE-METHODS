@@ -59,10 +59,16 @@ module Enumerable
     true
   end
 
-  def my_map 
-    result=[]
-    for i in self
-      result.push(yield i)
+  def my_map (*args)
+  result=[]
+    if args.length == 1
+        for i in self
+            result.push( args[0].call(i))
+        end
+    else    
+        for i in self
+          result.push(yield i)
+        end
     end
     result
   end
@@ -104,27 +110,3 @@ module Enumerable
   end
 
 end
-
-# array = %w[hey hi howdy]
-
-# puts array.my_map{|str| str.upcase} 
-
-array = %w[1 2 3 4]
-#  puts array.my_count
-#  puts array.my_count { |num| (num % 3).zero? }
-# puts array.my_count("")
-#puts array.my_inject {|i, number| i * number}
-
-
-# new= array.my_inject (Hash.new(0)) do |obj, num|
-#     obj[num]= num.to_i * 2
-#     obj
-#   end
-# puts new
-
-def multiply_el (array)
-  array.my_inject {|ac ,num| ac * num}
-end
-
-puts multiply_el [2, 3, 6]
-
