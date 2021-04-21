@@ -1,14 +1,14 @@
 module Enumerable
   def my_each
     i = 0
-    while i < self.length
+    while i < length
       yield self[i]
       i += 1
     end
   end
 
   def my_each_with_index
-    while i < self.length
+    while i < length
       yield self[i], i
 
       i += 1
@@ -18,7 +18,7 @@ module Enumerable
   def my_select
     i = 0
     result = []
-    while i < self.length
+    while i < length
       filter = yield self[i]
       result.push(self[i]) if filter
       i += 1
@@ -28,7 +28,7 @@ module Enumerable
 
   def my_all?
     i = 0
-    while i < self.length
+    while i < length
       result = yield self[i]
       return result unless result
 
@@ -39,7 +39,7 @@ module Enumerable
 
   def my_any?
     i = 0
-    while i < self.length
+    while i < length
       result = yield self[i]
       return result if result
 
@@ -48,10 +48,9 @@ module Enumerable
     false
   end
 
-
   def my_none?
     i = 0
-    while i < self.length
+    while i < length
       result = yield self[i]
       return false if result
 
@@ -59,8 +58,31 @@ module Enumerable
     end
     true
   end
+
+  def my_count(*args, &block)
+    if !block_given? && args.empty?
+      i = 0
+      each do
+        i += 1
+      end
+      i
+    elsif block_given? && args.empty?
+      j = 0
+      each do |i|
+        j += 1 if yield i
+      end
+      j
+    elsif !block_given? && !args.empty?
+      j = 0
+      for i in self
+        j += 1 if i == args[0]
+      end
+      j
+    end
+  end
 end
 
-array = [1, 2, 3, 4, 5, 6, 7, 8, 9]
-
-puts array.my_select {|num| num%3 == 0} 
+array = [1, 2, 3, 4, 5, 3, 7, 8, 9, 10,]
+ puts array.my_count
+ puts array.my_count { |num| (num % 3).zero? }
+puts array.my_count("")
