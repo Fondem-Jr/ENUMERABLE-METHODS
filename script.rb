@@ -89,8 +89,12 @@ module Enumerable
     end
   end
 
-  def my_inject 
-    i = self[0]
+  def my_inject (*args)
+    if args.length == 1
+      i = yield args[0], self[0]
+    else
+      i = self[0]
+    end
     j = 1
     while j <= self.length - 1
       i = yield i, self[j] 
@@ -105,8 +109,16 @@ end
 
 # puts array.my_map{|str| str.upcase} 
 
-array = [1, 2, 3, 4]
+array = %w[1 2 3 4]
 #  puts array.my_count
 #  puts array.my_count { |num| (num % 3).zero? }
 # puts array.my_count("")
-puts array.my_inject {|i, number| i * number}
+#puts array.my_inject {|i, number| i * number}
+
+
+new= array.my_inject (Hash.new(0)) do |obj, num|
+    obj[num]= num.to_i * 2
+    obj
+  end
+puts new
+
