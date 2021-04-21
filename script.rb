@@ -59,6 +59,20 @@ module Enumerable
     true
   end
 
+  def my_map 
+    result=[]
+    for i in self
+      result.push(yield i)
+    end
+    result
+  end
+end
+
+array = %w[hey hi howdy]
+
+puts array.my_map{|str| str.upcase} 
+
+
   def my_count(*args, &block)
     if !block_given? && args.empty?
       i = 0
@@ -86,3 +100,4 @@ array = [1, 2, 3, 4, 5, 3, 7, 8, 9, 10,]
  puts array.my_count
  puts array.my_count { |num| (num % 3).zero? }
 puts array.my_count("")
+
