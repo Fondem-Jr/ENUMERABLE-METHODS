@@ -66,12 +66,6 @@ module Enumerable
     end
     result
   end
-end
-
-array = %w[hey hi howdy]
-
-puts array.my_map{|str| str.upcase} 
-
 
   def my_count(*args, &block)
     if !block_given? && args.empty?
@@ -95,6 +89,10 @@ puts array.my_map{|str| str.upcase}
     end
   end
 end
+
+array = %w[hey hi howdy]
+
+puts array.my_map{|str| str.upcase} 
 
 array = [1, 2, 3, 4, 5, 3, 7, 8, 9, 10,]
  puts array.my_count
