@@ -59,54 +59,69 @@ module Enumerable
     true
   end
 
-  def my_map (*args)
-  result=[]
+  def my_map(*args)
+    result = []
     if args.length == 1
-        for i in self
-            result.push( args[0].call(i))
-        end
-    else    
-        for i in self
-          result.push(yield i)
-        end
+      each do |i|
+        result.push(args[0].call(i))
+      end
+    else
+      each do |i|
+        result.push(yield i)
+      end
     end
     result
   end
 
-  def my_count(*args, &block)
-    if !block_given? && args.empty?
-      i = 0
-      each do
-        i += 1
-      end
-      i
+  def my_count(*args)
+    j = 0
+    if !block_given?
+      j = no_block(self, args)
     elsif block_given? && args.empty?
-      j = 0
-      each do |i|
-        j += 1 if yield i
+      each do |k|
+        j += 1 if yield k
       end
-      j
-    elsif !block_given? && !args.empty?
-      j = 0
-      for i in self
-        j += 1 if i == args[0]
-      end
-      j
     end
+    j
   end
 
-  def my_inject (*args)
-    if args.length == 1
-      i = yield args[0], self[0]
-    else
-      i = self[0]
-    end
+  def my_inject(*args)
+    i = if args.length == 1
+          yield args[0], self[0]
+        else
+          self[0]
+        end
     j = 1
-    while j <= self.length - 1
-      i = yield i, self[j] 
+    while j <= length - 1
+      i = yield i, self[j]
       j += 1
     end
-    return i
+    i
   end
+end
 
+def no_block(arr, rule)
+  if rule.empty?
+    no_args_no_block(arr)
+  else
+    args_no_blocks(arr, rule)
+  end
+end
+
+# Auxiliaries for my_count (due to complexity flags by Rubocop)
+def no_args_no_block(arr)
+  j = 0
+  puts arr
+  arr.each do
+    j += 1
+  end
+  j
+end
+
+def args_no_blocks(arr, rule)
+  j = 0
+  arr.each do |h|
+    j += 1 if h == rule[0]
+  end
+  j
 end
