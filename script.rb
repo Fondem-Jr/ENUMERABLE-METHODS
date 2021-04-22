@@ -1,9 +1,22 @@
 module Enumerable
   def my_each
-    i = 0
-    while i < length
-      yield self[i]
-      i += 1
+    if block_given?
+      i = 0
+      if instance_of?(Hash.new(0).class)
+        arr = keys
+        each do |_h|
+          yield arr[i], self[arr[i]]
+          i += 1
+        end
+        return self
+      end
+      each do |j|
+        yield j
+        i += 1
+      end
+      self
+    else
+      []
     end
   end
 
@@ -125,3 +138,10 @@ def args_no_blocks(arr, rule)
   end
   j
 end
+
+hash = {
+  name: 'john',
+  Lastname: 'sena'
+}
+res = hash.my_each { |i, j| puts "#{i} is #{j}" }
+puts res
