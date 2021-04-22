@@ -99,7 +99,7 @@ module Enumerable
       end
       result
     else
-    Enumerable.new()
+    []
     end
   end
 
@@ -165,4 +165,4 @@ end
 
 array = ["hi", "hey"]
 
-puts array.my_map {|element| element.upcase}
+ puts array.my_map
