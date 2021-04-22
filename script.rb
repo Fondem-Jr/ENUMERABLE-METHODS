@@ -2,7 +2,7 @@ module Enumerable
   def my_each
     if block_given?
       i = 0
-      if instance_of?(Hash.new(0).class)
+      if instance_of?(Hash)
         arr = keys
         each do |_h|
           yield arr[i], self[arr[i]]
@@ -16,14 +16,14 @@ module Enumerable
       end
       self
     else
-      []
+      Enumerator.new()
     end
   end
 
   def my_each_with_index
     if block_given?
       i = 0
-      if instance_of?(Hash.new(0).class)
+      if instance_of?(Hash)
         arr = keys
         each do |_h|
           yield arr[i], self[arr[i]], i
@@ -37,30 +37,141 @@ module Enumerable
       end
       self
     else
-      []
+      Enumerator.new()
     end
   end
 
   def my_select
     i = 0
     result = []
-    while i < length
-      filter = yield self[i]
-      result.push(self[i]) if filter
-      i += 1
+    if block_given?
+      if instance_of?(Hash)
+        arr = keys
+        each do |_h|
+          result.push(self[arr[i]]) if yield arr[i], self[arr[i]]
+          i += 1
+        end
+        return result
+      end
+      for f in self
+        filter = yield f
+        result.push(f) if filter
+        i += 1
+      end
+      result
+    else
+      Enumerator.new()
     end
-    result
   end
 
-  def my_all?
-    i = 0
-    while i < length
-      result = yield self[i]
-      return result unless result
+  def my_all?(*args)
+    result=0
+    i=0
+    if args.length != 0
+      if args[0].instance_of?(Regexp)
+        if instance_of?(Hash)
+          each do |_h|
+            result = !!self[arr[i]].match(args[0])
+            if result == nil
+              return false 
+            end
+            unless result
+              return result
+            end
+            i += 1
+          end
+          return result
+        end
+  
+        for j in self
+          result = !!j.match(args[0])
+          if result == nil
+            return false 
+          end
+          unless result
+            return result
+          end
+        end
 
-      i += 1
+      elsif args[0].instance_of?(Integer) || args[0].instance_of?(Numeric)
+        if instance_of?(Hash)
+          each do |_h|
+            result = self[arr[i]].instance_of?(Integer) || self[arr[i]].instance_of?(Numeric)
+            if result == nil
+              return false 
+            end
+            unless result
+              return result
+            end
+            i += 1
+          end
+          return result
+        end
+  
+        for j in self
+          result = j.instance_of?(Integer) || j.instance_of?(Numeric)
+          if result == nil
+            return false 
+          end
+          unless result
+            return result
+          end
+        end
+      else #If other type of argument
+        if instance_of?(Hash)
+          each do |_h|
+            result = self[arr[i]].include?(args[0])
+            if result == nil
+              return false 
+            end
+            unless result
+              return result
+            end
+            i += 1
+          end
+          return result
+        end
+  
+        for j in self
+          result = j.include?( args[0])
+          if result == nil
+            return false 
+          end
+          unless result
+            return result
+          end
+        end
+      end
+    elsif block_given? && args.length == 0
+      if instance_of?(Hash)
+        each do |_h|
+          result = yield arr[i], self[arr[i]] 
+          if result == nil
+            return false 
+          end
+          unless result
+            return result
+          end
+          i += 1
+        end
+        return result
+      end
+
+      for j in self
+        result = yield j
+        if result == nil
+          return false 
+        end
+        unless result
+          return result
+        end
+      end
+      true
+    else
+
+
     end
-    true
+    result
   end
 
   def my_any?
@@ -154,10 +265,13 @@ end
 
 hash = {
   name: 'john',
-  Lastname: 'sena'
+  Lastname: 'jones',
+  music: 'jazz'
 }
-res = hash.my_each_with_index { |key, value, index| puts "#{key} #{value}  #{index}" }
+
+array=%w[tale tail talon te]
+res = array.my_all?(/ta/)
 
 
-array = 1..7
-puts array.my_each_with_index {|j, i| puts "this element element is #{i}"}
+puts res
+
