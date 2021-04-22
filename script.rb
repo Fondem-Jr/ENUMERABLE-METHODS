@@ -1,3 +1,9 @@
+# rubocop:disable Metrics/CyclomaticComplexity
+# rubocop:disable Metrics/PerceivedComplexity
+# rubocop:disable Metrics/BlockNesting
+# rubocop:disable Metrics/MethodLength
+# rubocop:disable Metrics/AbcSize
+# rubocop:disable Metrics/ModuleLength
 module Enumerable
   def my_each
     if block_given?
@@ -16,7 +22,7 @@ module Enumerable
       end
       self
     else
-      Enumerator.new()
+      Enumerator.new
     end
   end
 
@@ -37,7 +43,7 @@ module Enumerable
       end
       self
     else
-      Enumerator.new()
+      Enumerator.new
     end
   end
 
@@ -53,123 +59,92 @@ module Enumerable
         end
         return result
       end
-      for f in self
+      each do |f|
         filter = yield f
         result.push(f) if filter
         i += 1
       end
       result
     else
-      Enumerator.new()
+      Enumerator.new
     end
   end
 
   def my_all?(*args)
-    result=0
-    i=0
-    if args.length != 0
+    result = 0
+    i = 0
+    if !args.empty?
       if args[0].instance_of?(Regexp)
         if instance_of?(Hash)
           each do |_h|
-            result = !!self[arr[i]].match(args[0])
-            if result == nil
-              return false 
-            end
-            unless result
-              return result
-            end
+            result = !self[arr[i]].match(args[0]).nil?
+            return false if result.nil?
+            return result unless result
+
             i += 1
           end
           return result
         end
-  
-        for j in self
-          result = !!j.match(args[0])
-          if result == nil
-            return false 
-          end
-          unless result
-            return result
-          end
+
+        each do |j|
+          result = !j.match(args[0]).nil?
+          return false if result.nil?
+          return result unless result
         end
 
       elsif args[0].instance_of?(Integer) || args[0].instance_of?(Numeric)
         if instance_of?(Hash)
           each do |_h|
             result = self[arr[i]].instance_of?(Integer) || self[arr[i]].instance_of?(Numeric)
-            if result == nil
-              return false 
-            end
-            unless result
-              return result
-            end
+            return false if result.nil?
+            return result unless result
+
             i += 1
           end
           return result
         end
-  
-        for j in self
+
+        each do |j|
           result = j.instance_of?(Integer) || j.instance_of?(Numeric)
-          if result == nil
-            return false 
-          end
-          unless result
-            return result
-          end
+          return false if result.nil?
+          return result unless result
         end
-      else #If other type of argument
+      else # If other type of argument
         if instance_of?(Hash)
           each do |_h|
             result = self[arr[i]].include?(args[0])
-            if result == nil
-              return false 
-            end
-            unless result
-              return result
-            end
+            return false if result.nil?
+            return result unless result
+
             i += 1
           end
           return result
         end
-  
-        for j in self
-          result = j.include?( args[0])
-          if result == nil
-            return false 
-          end
-          unless result
-            return result
-          end
+
+        each do |j|
+          result = j.include?(args[0])
+          return false if result.nil?
+          return result unless result
         end
       end
-    elsif block_given? && args.length == 0
+    elsif block_given? && args.length.zero?
       if instance_of?(Hash)
         each do |_h|
-          result = yield arr[i], self[arr[i]] 
-          if result == nil
-            return false 
-          end
-          unless result
-            return result
-          end
+          result = yield arr[i], self[arr[i]]
+          return false if result.nil?
+          return result unless result
+
           i += 1
         end
         return result
       end
 
-      for j in self
+      each do |j|
         result = yield j
-        if result == nil
-          return false 
-        end
-        unless result
-          return result
-        end
+        return false if result.nil?
+        return result unless result
       end
       true
-    else
-
-
     end
     result
   end
@@ -263,15 +238,23 @@ def args_no_blocks(arr, rule)
   j
 end
 
-hash = {
-  name: 'john',
-  Lastname: 'jones',
-  music: 'jazz'
-}
-
-array=%w[tale tail talon te]
+# hash = {
+#   name: 'john',
+#   Lastname: 'jones',
+#   music: 'jazz'
+# }
+array = %w[tale tail talon te]
 res = array.my_all?(/ta/)
-
 
 puts res
 
+def multiply_els(arr)
+  arr.my_inject { |res, num| res * num }
+end
+
+# rubocop:enable Metrics/CyclomaticComplexity
+# rubocop:enable Metrics/PerceivedComplexity
+# rubocop:enable Metrics/BlockNesting
+# rubocop:enable Metrics/MethodLength
+# rubocop:enable Metrics/AbcSize
+# rubocop:enable Metrics/ModuleLength
