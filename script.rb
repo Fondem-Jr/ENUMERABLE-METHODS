@@ -86,17 +86,21 @@ module Enumerable
   end
 
   def my_map(*args)
-    result = []
-    if args.length == 1
-      each do |i|
-        result.push(args[0].call(i))
+    if block_given?
+      result = []
+      if args.length == 1
+        each do |i|
+          result.push(args[0].call(i))
+        end
+      else
+        each do |i|
+          result.push(yield i)
+        end
       end
+      result
     else
-      each do |i|
-        result.push(yield i)
-      end
+    Enumerable.new()
     end
-    result
   end
 
   def my_count(*args)
@@ -152,12 +156,13 @@ def args_no_blocks(arr, rule)
   j
 end
 
-hash = {
-  name: 'john',
-  Lastname: 'sena'
-}
-res = hash.my_each_with_index { |key, value, index| puts "#{key} #{value}  #{index}" }
+# hash = {
+#   name: 'john',
+#   Lastname: 'sena'
+# }
+# res = hash.my_each_with_index { |key, value, index| puts "#{key} #{value}  #{index}" }
 
 
-array = 1..7
-puts array.my_each_with_index {|j, i| puts "this element element is #{i}"}
+array = ["hi", "hey"]
+
+puts array.my_map {|element| element.upcase}
