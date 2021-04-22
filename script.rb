@@ -21,10 +21,23 @@ module Enumerable
   end
 
   def my_each_with_index
-    while i < length
-      yield self[i], i
-
-      i += 1
+    if block_given?
+      i = 0
+      if instance_of?(Hash.new(0).class)
+        arr = keys
+        each do |_h|
+          yield arr[i], self[arr[i]], i
+          i += 1
+        end
+        return self
+      end
+      each do |j|
+        yield j, i
+        i += 1
+      end
+      self
+    else
+      []
     end
   end
 
@@ -143,5 +156,8 @@ hash = {
   name: 'john',
   Lastname: 'sena'
 }
-res = hash.my_each { |i, j| puts "#{i} is #{j}" }
-puts res
+res = hash.my_each_with_index { |key, value, index| puts "#{key} #{value}  #{index}" }
+
+
+array = 1..7
+puts array.my_each_with_index {|j, i| puts "this element element is #{i}"}
