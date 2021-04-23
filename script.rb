@@ -235,20 +235,23 @@ module Enumerable
         x += 1
       end
     else
-     my_lambda = lambda {
-                  if symbol == :+
-                    {|initial, num| initial + num}
+     my_lambda =  if symbol == :+
+                     ->(initial, num) {initial+num}
                     elsif symbol == :-
-                    {|initial, num| initial - num}
+                      ->(initial, num) {initial-num}
                     elsif symbol == :/
-                    {|initial, num| initial / num}
+                      ->(initial, num) {initial/num}
                     elsif symbol == :*
-                    {|initial, num| initial * num}
-                    else symbol == :%
-                    {|initial, num| initial % num}
+                      ->(initial, num) {initial*num}
+                    elsif symbol == :%
+                      ->(initial, num) {initial%num}
                   end 
-                }
-                my_lambda.call
+                  x = 0
+                  for j in self
+                    initial = initial == 0 ? j : (my_lambda.call(initial, j))   if x == 0
+                    initial = my_lambda.call(initial, j) unless x == 0 
+                    x += 1
+                  end  
       end
     initial
   end
@@ -291,8 +294,8 @@ def multiply_els(arr)
   arr.my_inject { |res, num| res * num }
 end
 
-array = 1..3
-puts array.my_inject(2) {|i, j| i * j}
+array = [1.0, 2.0, 3.0]
+puts array.my_inject(:%)
 # rubocop:enable Metrics/CyclomaticComplexity
 # rubocop:enable Metrics/PerceivedComplexity
 # rubocop:enable Metrics/MethodLength
