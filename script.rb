@@ -262,7 +262,7 @@ end
 #   Lastname: 'jones',
 #   music: 'jazz'
 # }
-array = %w[tale tail talon te]
+array = %w[tale tail talon ta]
 res = array.my_all?(/ta/)
 
 puts res
