@@ -1,8 +1,13 @@
+# rubocop:disable Metrics/CyclomaticComplexity
+# rubocop:disable Metrics/PerceivedComplexity
+# rubocop:disable Metrics/MethodLength
+# rubocop:disable Metrics/AbcSize
+# rubocop:disable Metrics/ModuleLength
 module Enumerable
   def my_each
     if block_given?
       i = 0
-      if instance_of?(Hash.new(0).class)
+      if instance_of?(Hash)
         arr = keys
         each do |_h|
           yield arr[i], self[arr[i]]
@@ -16,14 +21,14 @@ module Enumerable
       end
       self
     else
-      []
+      Enumerator.new
     end
   end
 
   def my_each_with_index
     if block_given?
       i = 0
-      if instance_of?(Hash.new(0).class)
+      if instance_of?(Hash)
         arr = keys
         each do |_h|
           yield arr[i], self[arr[i]], i
@@ -37,50 +42,150 @@ module Enumerable
       end
       self
     else
-      []
+      Enumerator.new
     end
   end
 
   def my_select
     i = 0
     result = []
-    while i < length
-      filter = yield self[i]
-      result.push(self[i]) if filter
-      i += 1
+    if block_given?
+      if instance_of?(Hash)
+        arr = keys
+        each do |_h|
+          result.push(self[arr[i]]) if yield arr[i], self[arr[i]]
+          i += 1
+        end
+        return result
+      end
+      each do |f|
+        filter = yield f
+        result.push(f) if filter
+        i += 1
+      end
+      result
+    else
+      Enumerator.new
+    end
+  end
+
+  def my_all?(*args)
+    result = 0
+    keyhold = 1
+    valuehold = 1
+
+    noin_lambda = ->(x) { !x.nil? }
+
+    if instance_of?(Hash)
+      keyhold = keys
+      valuehold = values
+    end
+
+    if block_given?
+      each do |i|
+        result = instance_of?(Hash) ? (yield keyhold[indexOf(i)], valuehold[indexOf(i)]) : (yield i)
+        return result unless result
+      end
+    elsif !block_given? && args.empty?
+      each do |i|
+        result = instance_of?(Hash) ? noin_lambda.call(valuehold[indexOf(i)]) : noin_lambda.call(i)
+        return result unless result
+      end
+    elsif args[0].instance_of?(Regexp)
+      each do |i|
+        result = instance_of?(Hash) ? !valuehold[indexOf(i)].match(args[0]).nil? : !i.match(args[0]).nil?
+        return result unless result
+      end
+    elsif args[0].instance_of?(Class)
+      each do |i|
+        result = instance_of?(Hash) ? !valuehold[indexOf(i)].instance_of?(args[0]).nil? : !i.instance_of?(args[0]).nil?
+        return result unless result
+      end
+    else
+      each do |i|
+        result = instance_of?(Hash) ? (valuehold[indexOf(i)] == args[0]) : (i == args[0])
+        return result unless result
+      end
     end
     result
   end
 
-  def my_all?
-    i = 0
-    while i < length
-      result = yield self[i]
-      return result unless result
+  def my_any?(*args)
+    result = 0
+    keyhold = 1
+    valuehold = 1
 
-      i += 1
+    noin_lambda = ->(x) { !x.nil? }
+    if instance_of?(Hash)
+      keyhold = keys
+      valuehold = values
     end
-    true
+
+    if block_given?
+      each do |i|
+        result = instance_of?(Hash) ? (yield keyhold[indexOf(i)], valuehold[indexOf(i)]) : (yield i)
+        return result if result
+      end
+    elsif !block_given? && args.empty?
+      each do |i|
+        result = instance_of?(Hash) ? noin_lambda.call(valuehold[indexOf(i)]) : noin_lambda.call(i)
+        return result if result
+      end
+    elsif args[0].instance_of?(Regexp)
+      each do |i|
+        result = instance_of?(Hash) ? !valuehold[indexOf(i)].match(args[0]).nil? : !i.match(args[0]).nil?
+        return result if result
+      end
+    elsif args[0].instance_of?(Class)
+      each do |i|
+        result = instance_of?(Hash) ? !valuehold[indexOf(i)].instance_of?(args[0]).nil? : !i.instance_of?(args[0]).nil?
+        return result if result
+      end
+    else
+      each do |i|
+        result = instance_of?(Hash) ? (valuehold[indexOf(i)] == args[0]) : (i == args[0])
+        return result if result
+      end
+    end
+    result
   end
 
-  def my_any?
-    i = 0
-    while i < length
-      result = yield self[i]
-      return result if result
+  def my_none?(*args)
+    result = 0
+    keyhold = 1
+    valuehold = 1
 
-      i += 1
+    noin_lambda = ->(x) { !x.nil? }
+    if instance_of?(Hash)
+      keyhold = keys
+      valuehold = values
     end
-    false
-  end
 
-  def my_none?
-    i = 0
-    while i < length
-      result = yield self[i]
-      return false if result
-
-      i += 1
+    if block_given?
+      each do |i|
+        result = instance_of?(Hash) ? (yield keyhold[indexOf(i)], valuehold[indexOf(i)]) : (yield i)
+        return !result if result
+      end
+    elsif !block_given? && args.empty?
+      each do |i|
+        result = instance_of?(Hash) ? noin_lambda.call(valuehold[indexOf(i)]) : noin_lambda.call(i)
+        return !result if result
+      end
+    elsif args[0].instance_of?(Regexp)
+      each do |i|
+        result = instance_of?(Hash) ? !valuehold[indexOf(i)].match(args[0]).nil? : !i.match(args[0]).nil?
+        return !result if result
+      end
+    elsif args[0].instance_of?(Class)
+      each do |i|
+        result = instance_of?(Hash) ? !valuehold[indexOf(i)].instance_of?(args[0]).nil? : !i.instance_of?(args[0]).nil?
+        return !result if result
+      end
+    else
+      each do |i|
+        result = instance_of?(Hash) ? (valuehold[indexOf(i)] == args[0]) : (i == args[0])
+        return !result if result
+      end
     end
     true
   end
@@ -116,17 +221,36 @@ module Enumerable
   end
 
   def my_inject(*args)
-    i = if args.length == 1
-          yield args[0], self[0]
-        else
-          self[0]
-        end
-    j = 1
-    while j <= length - 1
-      i = yield i, self[j]
-      j += 1
+    symbol = 0
+    initial = 0
+    for j in args 
+      symbol = j if j.instance_of?(Symbol)
+      initial = j unless j.instance_of?(Symbol)
     end
-    i
+    if block_given?
+        x = 0
+      for j in self
+        initial = initial == 0 ? j : (yield initial, j)   if x == 0
+        initial = yield initial, j unless x == 0 
+        x += 1
+      end
+    else
+     my_lambda = lambda {
+                  if symbol == :+
+                    {|initial, num| initial + num}
+                    elsif symbol == :-
+                    {|initial, num| initial - num}
+                    elsif symbol == :/
+                    {|initial, num| initial / num}
+                    elsif symbol == :*
+                    {|initial, num| initial * num}
+                    else symbol == :%
+                    {|initial, num| initial % num}
+                  end 
+                }
+                my_lambda.call
+      end
+    initial
   end
 end
 
@@ -158,11 +282,19 @@ end
 
 # hash = {
 #   name: 'john',
-#   Lastname: 'sena'
+#   Lastname: 'jones',
+#   music: 'jazz'
 # }
-# res = hash.my_each_with_index { |key, value, index| puts "#{key} #{value}  #{index}" }
+#array = %w[tale tail talon ta]
 
+def multiply_els(arr)
+  arr.my_inject { |res, num| res * num }
+end
 
-array = ["hi", "hey"]
-
- puts array.my_map
+array = 1..3
+puts array.my_inject(2) {|i, j| i * j}
+# rubocop:enable Metrics/CyclomaticComplexity
+# rubocop:enable Metrics/PerceivedComplexity
+# rubocop:enable Metrics/MethodLength
+# rubocop:enable Metrics/AbcSize
+# rubocop:enable Metrics/ModuleLength
