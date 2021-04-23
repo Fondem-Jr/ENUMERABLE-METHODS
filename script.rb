@@ -1,6 +1,5 @@
 # rubocop:disable Metrics/CyclomaticComplexity
 # rubocop:disable Metrics/PerceivedComplexity
-# rubocop:disable Metrics/BlockNesting
 # rubocop:disable Metrics/MethodLength
 # rubocop:disable Metrics/AbcSize
 # rubocop:disable Metrics/ModuleLength
@@ -72,101 +71,121 @@ module Enumerable
 
   def my_all?(*args)
     result = 0
-    i = 0
-    if !args.empty?
-      if args[0].instance_of?(Regexp)
-        if instance_of?(Hash)
-          each do |_h|
-            result = !self[arr[i]].match(args[0]).nil?
-            return false if result.nil?
-            return result unless result
+    keyhold = 1
+    valuehold = 1
 
-            i += 1
-          end
-          return result
-        end
+    noin_lambda = ->(x) { !x.nil? }
 
-        each do |j|
-          result = !j.match(args[0]).nil?
-          return false if result.nil?
-          return result unless result
-        end
+    if instance_of?(Hash)
+      keyhold = keys
+      valuehold = values
+    end
 
-      elsif args[0].instance_of?(Integer) || args[0].instance_of?(Numeric)
-        if instance_of?(Hash)
-          each do |_h|
-            result = self[arr[i]].instance_of?(Integer) || self[arr[i]].instance_of?(Numeric)
-            return false if result.nil?
-            return result unless result
-
-            i += 1
-          end
-          return result
-        end
-
-        each do |j|
-          result = j.instance_of?(Integer) || j.instance_of?(Numeric)
-          return false if result.nil?
-          return result unless result
-        end
-      else # If other type of argument
-        if instance_of?(Hash)
-          each do |_h|
-            result = self[arr[i]].include?(args[0])
-            return false if result.nil?
-            return result unless result
-
-            i += 1
-          end
-          return result
-        end
-
-        each do |j|
-          result = j.include?(args[0])
-          return false if result.nil?
-          return result unless result
-        end
-      end
-    elsif block_given? && args.length.zero?
-      if instance_of?(Hash)
-        each do |_h|
-          result = yield arr[i], self[arr[i]]
-          return false if result.nil?
-          return result unless result
-
-          i += 1
-        end
-        return result
-      end
-
-      each do |j|
-        result = yield j
-        return false if result.nil?
+    if block_given?
+      each do |i|
+        result = instance_of?(Hash) ? (yield keyhold[indexOf(i)], valuehold[indexOf(i)]) : (yield i)
         return result unless result
       end
-      true
+    elsif !block_given? && args.empty?
+      each do |i|
+        result = instance_of?(Hash) ? noin_lambda.call(valuehold[indexOf(i)]) : noin_lambda.call(i)
+        return result unless result
+      end
+    elsif args[0].instance_of?(Regexp)
+      each do |i|
+        result = instance_of?(Hash) ? !valuehold[indexOf(i)].match(args[0]).nil? : !i.match(args[0]).nil?
+        return result unless result
+      end
+    elsif args[0].instance_of?(Class)
+      each do |i|
+        result = instance_of?(Hash) ? !valuehold[indexOf(i)].instance_of?(args[0]).nil? : !i.instance_of?(args[0]).nil?
+        return result unless result
+      end
+    else
+      each do |i|
+        result = instance_of?(Hash) ? (valuehold[indexOf(i)] == args[0]) : (i == args[0])
+        return result unless result
+      end
     end
     result
   end
 
-  def my_any?
-    i = 0
-    while i < length
-      result = yield self[i]
-      return result if result
+  def my_any?(*args)
+    result = 0
+    keyhold = 1
+    valuehold = 1
 
-      i += 1
+    noin_lambda = ->(x) { !x.nil? }
+    if instance_of?(Hash)
+      keyhold = keys
+      valuehold = values
     end
-    false
+
+    if block_given?
+      each do |i|
+        result = instance_of?(Hash) ? (yield keyhold[indexOf(i)], valuehold[indexOf(i)]) : (yield i)
+        return result if result
+      end
+    elsif !block_given? && args.empty?
+      each do |i|
+        result = instance_of?(Hash) ? noin_lambda.call(valuehold[indexOf(i)]) : noin_lambda.call(i)
+        return result if result
+      end
+    elsif args[0].instance_of?(Regexp)
+      each do |i|
+        result = instance_of?(Hash) ? !valuehold[indexOf(i)].match(args[0]).nil? : !i.match(args[0]).nil?
+        return result if result
+      end
+    elsif args[0].instance_of?(Class)
+      each do |i|
+        result = instance_of?(Hash) ? !valuehold[indexOf(i)].instance_of?(args[0]).nil? : !i.instance_of?(args[0]).nil?
+        return result if result
+      end
+    else
+      each do |i|
+        result = instance_of?(Hash) ? (valuehold[indexOf(i)] == args[0]) : (i == args[0])
+        return result if result
+      end
+    end
+    result
   end
 
-  def my_none?
-    i = 0
-    while i < length
-      result = yield self[i]
-      return false if result
+  def my_none?(*args)
+    result = 0
+    keyhold = 1
+    valuehold = 1
 
-      i += 1
+    noin_lambda = ->(x) { !x.nil? }
+    if instance_of?(Hash)
+      keyhold = keys
+      valuehold = values
+    end
+
+    if block_given?
+      each do |i|
+        result = instance_of?(Hash) ? (yield keyhold[indexOf(i)], valuehold[indexOf(i)]) : (yield i)
+        return !result if result
+      end
+    elsif !block_given? && args.empty?
+      each do |i|
+        result = instance_of?(Hash) ? noin_lambda.call(valuehold[indexOf(i)]) : noin_lambda.call(i)
+        return !result if result
+      end
+    elsif args[0].instance_of?(Regexp)
+      each do |i|
+        result = instance_of?(Hash) ? !valuehold[indexOf(i)].match(args[0]).nil? : !i.match(args[0]).nil?
+        return !result if result
+      end
+    elsif args[0].instance_of?(Class)
+      each do |i|
+        result = instance_of?(Hash) ? !valuehold[indexOf(i)].instance_of?(args[0]).nil? : !i.instance_of?(args[0]).nil?
+        return !result if result
+      end
+    else
+      each do |i|
+        result = instance_of?(Hash) ? (valuehold[indexOf(i)] == args[0]) : (i == args[0])
+        return !result if result
+      end
     end
     true
   end
@@ -254,7 +273,6 @@ end
 
 # rubocop:enable Metrics/CyclomaticComplexity
 # rubocop:enable Metrics/PerceivedComplexity
-# rubocop:enable Metrics/BlockNesting
 # rubocop:enable Metrics/MethodLength
 # rubocop:enable Metrics/AbcSize
 # rubocop:enable Metrics/ModuleLength
