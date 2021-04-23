@@ -231,14 +231,23 @@ module Enumerable
       end
       result
     else
-    []
+      []
     end
   end
 
   def my_count(*args)
     j = 0
     if !block_given?
-      j = no_block(self, args)
+      j = if rule.empty?
+            puts arr
+            arr.each do
+              j += 1
+            end
+          else
+            arr.each do |h|
+              j += 1 if h == rule[0]
+            end
+          end
     elsif block_given? && args.empty?
       each do |k|
         j += 1 if yield k
@@ -250,75 +259,40 @@ module Enumerable
   def my_inject(*args)
     symbol = 0
     initial = 0
-    for j in args 
+    args.each do |j|
       symbol = j if j.instance_of?(Symbol)
       initial = j unless j.instance_of?(Symbol)
     end
     if block_given?
-        x = 0
-      for j in self
-        initial = initial == 0 ? j : (yield initial, j)   if x == 0
-        initial = yield initial, j unless x == 0 
+      x = 0
+      each do |j|
+        initial = initial.zero? ? j : (yield initial, j) if x.zero?
+        initial = yield initial, j unless x.zero?
         x += 1
       end
     else
-     my_lambda =  if symbol == :+
-                     ->(initial, num) {initial+num}
-                    elsif symbol == :-
-                      ->(initial, num) {initial-num}
-                    elsif symbol == :/
-                      ->(initial, num) {initial/num}
-                    elsif symbol == :*
-                      ->(initial, num) {initial*num}
-                    elsif symbol == :%
-                      ->(initial, num) {initial%num}
-                  end 
-                  x = 0
-                  for j in self
-                    initial = initial == 0 ? j : (my_lambda.call(initial, j))   if x == 0
-                    initial = my_lambda.call(initial, j) unless x == 0 
-                    x += 1
-                  end  
+      my_lambda = case symbol
+                  when :+
+                    ->(init, num) { init + num }
+                  when :-
+                    ->(init, num) { init - num }
+                  when :/
+                    ->(init, num) { init / num }
+                  when :*
+                    ->(init, num) { init * num }
+                  when :%
+                    ->(init, num) { init % num }
+                  end
+      x = 0
+      each do |j|
+        initial = initial.zero? ? j : my_lambda.call(initial, j) if x.zero?
+        initial = my_lambda.call(initial, j) unless x.zero?
+        x += 1
       end
+    end
     initial
   end
 end
-
-def no_block(arr, rule)
-  if rule.empty?
-    no_args_no_block(arr)
-  else
-    args_no_blocks(arr, rule)
-  end
-end
-
-# Auxiliaries for my_count (due to complexity flags by Rubocop)
-def no_args_no_block(arr)
-  j = 0
-  puts arr
-  arr.each do
-    j += 1
-  end
-  j
-end
-
-def args_no_blocks(arr, rule)
-  j = 0
-  arr.each do |h|
-    j += 1 if h == rule[0]
-  end
-  j
-end
-
-# hash = {
-#   name: 'john',
-#   Lastname: 'jones',
-#   music: 'jazz'
-# }
-array = %w[tale tail talon ta]
-res = array.my_all?(/ta/)
-
-puts res
 
 def multiply_els(arr)
   arr.my_inject { |res, num| res * num }
