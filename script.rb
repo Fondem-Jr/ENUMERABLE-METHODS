@@ -3,6 +3,7 @@
 # rubocop:disable Metrics/MethodLength
 # rubocop:disable Metrics/AbcSize
 # rubocop:disable Metrics/ModuleLength
+# rubocop:disable Style/DoubleNegation
 module Enumerable
   def my_each
     if block_given?
@@ -21,7 +22,7 @@ module Enumerable
       end
       self
     else
-      Enumerator.new
+      self
     end
   end
 
@@ -42,7 +43,7 @@ module Enumerable
       end
       self
     else
-      Enumerator.new
+      self
     end
   end
 
@@ -65,7 +66,7 @@ module Enumerable
       end
       result
     else
-      Enumerator.new
+      self
     end
   end
 
@@ -74,7 +75,7 @@ module Enumerable
     keyhold = 1
     valuehold = 1
 
-    noin_lambda = ->(x) { !x.nil? }
+    noin_lambda = ->(x) { !!x }
 
     if instance_of?(Hash)
       keyhold = keys
@@ -115,7 +116,7 @@ module Enumerable
     keyhold = 1
     valuehold = 1
 
-    noin_lambda = ->(x) { !x.nil? }
+    noin_lambda = ->(x) { !!x }
     if instance_of?(Hash)
       keyhold = keys
       valuehold = values
@@ -155,7 +156,7 @@ module Enumerable
     keyhold = 1
     valuehold = 1
 
-    noin_lambda = ->(x) { !x.nil? }
+    noin_lambda = ->(x) { !!x }
     if instance_of?(Hash)
       keyhold = keys
       valuehold = values
@@ -218,7 +219,7 @@ module Enumerable
   end
 
   def my_map(*args)
-    if block_given?
+    if block_given? 
       result = []
       if args.length == 1
         each do |i|
@@ -231,7 +232,7 @@ module Enumerable
       end
       result
     else
-      []
+      self
     end
   end
 
@@ -257,6 +258,9 @@ module Enumerable
   end
 
   def my_inject(*args)
+    if !block_given?&& args.empty?
+      raise LocalJumpError, 'no block given'
+    end
     symbol = 0
     initial = 0
     args.each do |j|
@@ -298,8 +302,12 @@ def multiply_els(arr)
   arr.my_inject { |res, num| res * num }
 end
 
+array = [1, 2, 3, 4, false]
+puts array.my_inject
+
 # rubocop:enable Metrics/CyclomaticComplexity
 # rubocop:enable Metrics/PerceivedComplexity
 # rubocop:enable Metrics/MethodLength
 # rubocop:enable Metrics/AbcSize
 # rubocop:enable Metrics/ModuleLength
+# rubocop:enable Style/DoubleNegation
