@@ -187,6 +187,33 @@ module Enumerable
         return !result if result
       end
     end
+
+    if block_given?
+      each do |i|
+        result = instance_of?(Hash) ? (yield keyhold[indexOf(i)], valuehold[indexOf(i)]) : (yield i)
+        return !result if result
+      end
+    elsif !block_given? && args.empty?
+      each do |i|
+        result = instance_of?(Hash) ? noin_lambda.call(valuehold[indexOf(i)]) : noin_lambda.call(i)
+        return !result if result
+      end
+    elsif args[0].instance_of?(Regexp)
+      each do |i|
+        result = instance_of?(Hash) ? !valuehold[indexOf(i)].match(args[0]).nil? : !i.match(args[0]).nil?
+        return !result if result
+      end
+    elsif args[0].instance_of?(Class)
+      each do |i|
+        result = instance_of?(Hash) ? !valuehold[indexOf(i)].instance_of?(args[0]).nil? : !i.instance_of?(args[0]).nil?
+        return !result if result
+      end
+    else
+      each do |i|
+        result = instance_of?(Hash) ? (valuehold[indexOf(i)] == args[0]) : (i == args[0])
+        return !result if result
+      end
+    end
     true
   end
 
@@ -288,14 +315,15 @@ end
 #   Lastname: 'jones',
 #   music: 'jazz'
 # }
-#array = %w[tale tail talon ta]
+array = %w[tale tail talon ta]
+res = array.my_all?(/ta/)
+
+puts res
 
 def multiply_els(arr)
   arr.my_inject { |res, num| res * num }
 end
 
-array = [1.0, 2.0, 3.0]
-puts array.my_inject(:%)
 # rubocop:enable Metrics/CyclomaticComplexity
 # rubocop:enable Metrics/PerceivedComplexity
 # rubocop:enable Metrics/MethodLength
