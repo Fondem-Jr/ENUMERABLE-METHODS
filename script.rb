@@ -10,9 +10,8 @@ module Enumerable
 
     i = 0
     if instance_of?(Hash)
-      arr = keys
-      each do |_h|
-        yield arr[i], self[arr[i]]
+      each do |h|
+        yield h
         i += 1
       end
       return self
@@ -28,9 +27,8 @@ module Enumerable
 
     i = 0
     if instance_of?(Hash)
-      arr = keys
-      each do |_h|
-        yield arr[i], self[arr[i]], i
+      each do |h|
+        yield h, i
         i += 1
       end
       return self
@@ -46,7 +44,6 @@ module Enumerable
     result = []
     if block_given?
       if instance_of?(Hash)
-        arr = keys
         each do |_h|
           result.push(self[arr[i]]) if yield arr[i], self[arr[i]]
           i += 1
