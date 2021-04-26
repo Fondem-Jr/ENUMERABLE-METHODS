@@ -232,11 +232,11 @@ module Enumerable
     if !block_given?
       j = if args.empty?
             puts args
-            self.each do
+            each do
               j += 1
             end
           else
-            self.each do |h|
+            each do |h|
               j += 1 if h == rule[0]
             end
           end
@@ -298,5 +298,3 @@ end
 # rubocop:enable Metrics/AbcSize
 # rubocop:enable Metrics/ModuleLength
 # rubocop:enable Style/DoubleNegation
-array =[1, 3, 5, 6, 4, 4, 4 ,18 ,17 ,10]
-puts array.my_all?(String)
