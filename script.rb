@@ -94,12 +94,12 @@ module Enumerable
       end
     elsif args[0].instance_of?(Regexp)
       each do |i|
-        result = instance_of?(Hash) ? !valuehold[indexOf(i)].match(args[0]).nil? : !i.match(args[0]).nil?
+        result = instance_of?(Hash) ? !!valuehold[indexOf(i)].match(args[0]) : !!i.match(args[0])
         return result unless result
       end
     elsif args[0].instance_of?(Class)
       each do |i|
-        result = instance_of?(Hash) ? !valuehold[indexOf(i)].instance_of?(args[0]).nil? : !i.instance_of?(args[0]).nil?
+        result = instance_of?(Hash) ? !!valuehold[indexOf(i)].instance_of?(args[0]): !!i.instance_of?(args[0])
         return result unless result
       end
     else
@@ -134,12 +134,12 @@ module Enumerable
       end
     elsif args[0].instance_of?(Regexp)
       each do |i|
-        result = instance_of?(Hash) ? !valuehold[indexOf(i)].match(args[0]).nil? : !i.match(args[0]).nil?
+        result = instance_of?(Hash) ? !!valuehold[indexOf(i)].match(args[0]) : !!i.match(args[0])
         return result if result
       end
     elsif args[0].instance_of?(Class)
       each do |i|
-        result = instance_of?(Hash) ? !valuehold[indexOf(i)].instance_of?(args[0]).nil? : !i.instance_of?(args[0]).nil?
+        result = instance_of?(Hash) ? !!valuehold[indexOf(i)].instance_of?(args[0]) : !!i.instance_of?(args[0])
         return result if result
       end
     else
@@ -174,12 +174,12 @@ module Enumerable
       end
     elsif args[0].instance_of?(Regexp)
       each do |i|
-        result = instance_of?(Hash) ? !valuehold[indexOf(i)].match(args[0]).nil? : !i.match(args[0]).nil?
+        result = instance_of?(Hash) ? !!valuehold[indexOf(i)].match(args[0]) : !!i.match(args[0])
         return !result if result
       end
     elsif args[0].instance_of?(Class)
       each do |i|
-        result = instance_of?(Hash) ? !valuehold[indexOf(i)].instance_of?(args[0]).nil? : !i.instance_of?(args[0]).nil?
+        result = instance_of?(Hash) ? !!valuehold[indexOf(i)].instance_of?(args[0]) : !!i.instance_of?(args[0])
         return !result if result
       end
     else
@@ -201,12 +201,12 @@ module Enumerable
       end
     elsif args[0].instance_of?(Regexp)
       each do |i|
-        result = instance_of?(Hash) ? !valuehold[indexOf(i)].match(args[0]).nil? : !i.match(args[0]).nil?
+        result = instance_of?(Hash) ? !!valuehold[indexOf(i)].match(args[0]) : !!i.match(args[0])
         return !result if result
       end
     elsif args[0].instance_of?(Class)
       each do |i|
-        result = instance_of?(Hash) ? !valuehold[indexOf(i)].instance_of?(args[0]).nil? : !i.instance_of?(args[0]).nil?
+        result = instance_of?(Hash) ? !!valuehold[indexOf(i)].instance_of?(args[0]) : !!i.instance_of?(args[0])
         return !result if result
       end
     else
@@ -239,8 +239,8 @@ module Enumerable
   def my_count(*args)
     j = 0
     if !block_given?
-      j = if rule.empty?
-            puts arr
+      j = if args.empty?
+            puts args
             arr.each do
               j += 1
             end
@@ -303,7 +303,7 @@ def multiply_els(arr)
 end
 
 array = [1, 2, 3, 4, false]
-puts array.my_inject
+puts "Hi"
 
 # rubocop:enable Metrics/CyclomaticComplexity
 # rubocop:enable Metrics/PerceivedComplexity
