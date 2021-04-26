@@ -90,7 +90,7 @@ module Enumerable
       end
     elsif args[0].instance_of?(Class)
       each do |i|
-        result = instance_of?(Hash) ? !!valuehold[indexOf(i)].instance_of?(args[0]) : !!i.instance_of?(args[0])
+        result = instance_of?(Hash) ? !!valuehold[indexOf(i)].is_a?(args[0]) : !!i.is_a?(args[0])
         return result unless result
       end
     else
@@ -130,7 +130,7 @@ module Enumerable
       end
     elsif args[0].instance_of?(Class)
       each do |i|
-        result = instance_of?(Hash) ? !!valuehold[indexOf(i)].instance_of?(args[0]) : !!i.instance_of?(args[0])
+        result = instance_of?(Hash) ? !!valuehold[indexOf(i)].is_a?(args[0]) : !!i.is_a?(args[0])
         return result if result
       end
     else
@@ -197,7 +197,7 @@ module Enumerable
       end
     elsif args[0].instance_of?(Class)
       each do |i|
-        result = instance_of?(Hash) ? !!valuehold[indexOf(i)].instance_of?(args[0]) : !!i.instance_of?(args[0])
+        result = instance_of?(Hash) ? !!valuehold[indexOf(i)].is_a?(args[0]) : !!i.is_a?(args[0])
         return !result if result
       end
     else
@@ -298,5 +298,5 @@ end
 # rubocop:enable Metrics/AbcSize
 # rubocop:enable Metrics/ModuleLength
 # rubocop:enable Style/DoubleNegation
-array = [1, 3, 5, 6, 4, 4, 4 ,18 ,17 ,10]
-puts array.my_count {|j| j < 10}
+array =[1, 3, 5, 6, 4, 4, 4 ,18 ,17 ,10]
+puts array.my_all?(String)
