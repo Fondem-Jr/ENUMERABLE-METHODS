@@ -6,7 +6,7 @@
 # rubocop:disable Style/DoubleNegation
 module Enumerable
   def my_each
-    return self unless block_given?
+    return to_enum unless block_given?
 
     i = 0
     if instance_of?(Hash)
@@ -24,7 +24,7 @@ module Enumerable
   end
 
   def my_each_with_index
-    return self unless block_given?
+    return to_enum unless block_given?
 
     i = 0
     if instance_of?(Hash)
@@ -60,7 +60,7 @@ module Enumerable
       end
       result
     else
-      self
+      to_enum
     end
   end
 
@@ -226,7 +226,7 @@ module Enumerable
       end
       result
     else
-      self
+      to_enum
     end
   end
 
@@ -295,17 +295,9 @@ def multiply_els(arr)
   arr.my_inject { |res, num| res * num }
 end
 
-hash = {
-  place: 'Here',
-  moment: 'Now',
-  how: 'Like this'
-}
-
 # rubocop:enable Metrics/CyclomaticComplexity
 # rubocop:enable Metrics/PerceivedComplexity
 # rubocop:enable Metrics/MethodLength
 # rubocop:enable Metrics/AbcSize
 # rubocop:enable Metrics/ModuleLength
 # rubocop:enable Style/DoubleNegation
-
-hash.my_each_with_index { |key, val, index| puts "#{key},  #{val}, #{index}." }
