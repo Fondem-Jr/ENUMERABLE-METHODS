@@ -6,44 +6,38 @@
 # rubocop:disable Style/DoubleNegation
 module Enumerable
   def my_each
-    if block_given?
-      i = 0
-      if instance_of?(Hash)
-        arr = keys
-        each do |_h|
-          yield arr[i], self[arr[i]]
-          i += 1
-        end
-        return self
-      end
-      each do |j|
-        yield j
+    return self unless block_given?
+
+    i = 0
+    if instance_of?(Hash)
+      arr = keys
+      each do |_h|
+        yield arr[i], self[arr[i]]
         i += 1
       end
-      self
-    else
-      self
+      return self
+    end
+    each do |j|
+      yield j
+      i += 1
     end
   end
 
   def my_each_with_index
-    if block_given?
-      i = 0
-      if instance_of?(Hash)
-        arr = keys
-        each do |_h|
-          yield arr[i], self[arr[i]], i
-          i += 1
-        end
-        return self
-      end
-      each do |j|
-        yield j, i
+    return self unless block_given?
+
+    i = 0
+    if instance_of?(Hash)
+      arr = keys
+      each do |_h|
+        yield arr[i], self[arr[i]], i
         i += 1
       end
-      self
-    else
-      self
+      return self
+    end
+    each do |j|
+      yield j, i
+      i += 1
     end
   end
 
@@ -99,7 +93,7 @@ module Enumerable
       end
     elsif args[0].instance_of?(Class)
       each do |i|
-        result = instance_of?(Hash) ? !!valuehold[indexOf(i)].instance_of?(args[0]): !!i.instance_of?(args[0])
+        result = instance_of?(Hash) ? !!valuehold[indexOf(i)].instance_of?(args[0]) : !!i.instance_of?(args[0])
         return result unless result
       end
     else
@@ -219,7 +213,7 @@ module Enumerable
   end
 
   def my_map(*args)
-    if block_given? 
+    if block_given?
       result = []
       if args.length == 1
         each do |i|
@@ -258,9 +252,8 @@ module Enumerable
   end
 
   def my_inject(*args)
-    if !block_given?&& args.empty?
-      raise LocalJumpError, 'no block given'
-    end
+    raise LocalJumpError, 'no block given' if !block_given? && args.empty?
+
     symbol = 0
     initial = 0
     args.each do |j|
@@ -302,8 +295,11 @@ def multiply_els(arr)
   arr.my_inject { |res, num| res * num }
 end
 
-array = [1, 2, 3, 4, false]
-puts "Hi"
+hash = {
+  place: 'Here',
+  moment: 'Now',
+  how: 'Like this'
+}
 
 # rubocop:enable Metrics/CyclomaticComplexity
 # rubocop:enable Metrics/PerceivedComplexity
@@ -311,3 +307,5 @@ puts "Hi"
 # rubocop:enable Metrics/AbcSize
 # rubocop:enable Metrics/ModuleLength
 # rubocop:enable Style/DoubleNegation
+
+hash.my_each_with_index { |key, val, index| puts "#{key},  #{val}, #{index}." }
