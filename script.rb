@@ -291,8 +291,6 @@ def multiply_els(arr)
   arr.my_inject { |res, num| res * num }
 end
 
-array = [1, 2, 3]
-puts array.my_count(3)
 # rubocop:enable Metrics/CyclomaticComplexity
 # rubocop:enable Metrics/PerceivedComplexity
 # rubocop:enable Metrics/MethodLength
