@@ -230,16 +230,15 @@ module Enumerable
   def my_count(*args)
     j = 0
     if !block_given?
-      j = if args.empty?
-            puts args
-            each do
-              j += 1
-            end
-          else
-            each do |h|
-              j += 1 if h == rule[0]
-            end
-          end
+      if args.empty?
+        each do
+          j += 1
+        end
+      else
+        each do |h|
+          j += 1 if h == args[0]
+        end
+      end
     elsif block_given? && args.empty?
       each do |k|
         j += 1 if yield k
@@ -292,6 +291,8 @@ def multiply_els(arr)
   arr.my_inject { |res, num| res * num }
 end
 
+array = [1, 2, 3]
+puts array.my_count(3)
 # rubocop:enable Metrics/CyclomaticComplexity
 # rubocop:enable Metrics/PerceivedComplexity
 # rubocop:enable Metrics/MethodLength
