@@ -183,5 +183,41 @@ RSpec.describe Enumerable do
             expect(my_result).to eql(std_result) 
             end
         end
-    end 
+    end
+    context '#my_count' do
+        describe 'for no block given' do
+            it 'returns an emunerable when no block given' do
+                std_result = my_array.count.class
+                my_result = my_array.my_count.class
+                expect(my_result).to eql(std_result)
+            end
+        end
+        describe 'for array' do
+            it 'returns a new array with the result of running a block on an array' do
+                std_result = my_array.count.class { |i| i*i }
+                my_result = my_array.my_count.class { |i| i*i }
+                expect(my_result).to eql(std_result)
+            end
+        end
+        describe 'for a range' do
+            it 'returns a new array with the result of running a block on a range' do
+                std_result = (1..4).count { |i| i*i } 
+                my_result = (1..4).my_count { |i| i*i } 
+                expect(my_result).to eql(std_result)
+            end
+        end
+        describe 'for hash' do
+            it 'returns a new array with the result of running a hash' do
+                std_result = []
+                my_hash.count do |i, h|
+                    std_result.push(h)
+                end
+                my_result = []
+                my_hash.my_count do |i, h|
+                    my_result.push(h)
+                end
+                expect(my_result).to eql(std_result)
+            end 
+        end
+    end
 end
