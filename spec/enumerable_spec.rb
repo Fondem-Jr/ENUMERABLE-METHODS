@@ -176,5 +176,12 @@ RSpec.describe Enumerable do
             expect(my_result).to eql(std_result) 
             end
         end
+        describe 'for ranges' do
+            it 'returns the transformed elements in a new array using range' do
+            std_result = (1..4).my_map { |i| i*i }
+            my_result = (1..4).map { |i| i*i }
+            expect(my_result).to eql(std_result) 
+            end
+        end
     end 
 end
