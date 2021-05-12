@@ -4,6 +4,7 @@ require 'spec_helper'
 require_relative '../script'
 
 my_array = (1..10).to_a
+my_range = (1..10)
 my_hash = {"a" => 100, "b" => 200}
 
 
@@ -105,6 +106,20 @@ RSpec.describe Enumerable do
         #         expect(my_result).to eql(std_result)
         #     end
         # end
+        describe 'for range' do
+            it 'it returns the selected element from a range' do
+                my_result = my_range.my_select { |num| num.even? }
+                std_result = my_range.select { |num| num.even? }
+                expect(my_result).to eql(std_result)
+            end
+        end
+        describe 'for symbol' do
+            it 'it returns the selected element from a array of symbols' do
+                my_result = [:foo, :bar].my_select { |x| x == :foo } 
+                std_result = [:foo, :bar].select { |x| x == :foo } 
+                expect(my_result).to eql(std_result)
+            end
+        end
     end
 
     context '#my_all' do
@@ -120,7 +135,28 @@ RSpec.describe Enumerable do
             std_result = my_array.all? { |num| num>4}
             my_result = my_array.my_all? { |num| num>4}
             expect(my_result).to eql(std_result) 
-            end
+        end
+    end
+        describe 'for regular expressions' do
+            it 'returns true if all words in the array satisfies the regular expression' do
+                std_result = %w[ant bear cat].my_all?(/t/) 
+                my_result = %w[ant bear cat].all?(/t/)
+                expect(my_result).to eql(std_result)
+            end 
+        end
+        describe 'for type of data' do
+            it 'returns true if all objects in the array satisfies type of data' do
+                std_result = [1, 2i, 3.14].my_all?(Numeric)
+                my_result = [1, 2i, 3.14].all?(Numeric)
+                expect(my_result).to eql(std_result)
+            end 
+        end
+        describe 'for a nil in the collection' do
+            it 'returns false if nil is in the array' do
+                std_result = [nil, true, 99].my_all? 
+                my_result = [nil, true, 99].all? 
+                expect(my_result).to eql(std_result)
+            end 
         end
     end
 
