@@ -191,6 +191,33 @@ RSpec.describe Enumerable do
         end
     end
 
+    context '#my_none' do
+        describe 'when no block is given' do
+            it 'returns true when no block is given and none of the collection member is true' do
+                std_result = [nil, false].none? 
+                my_result = [nil, false].my_none? 
+                expect(my_result).to eql(std_result)
+            end
+            it 'returns true when no block is given, using a regular expression and none of the collection member is true' do 
+                std_result = %w{ant bear cat}.none?(/d/)  
+                my_result = %w{ant bear cat}.my_none?(/d/)  
+                expect(my_result).to eql(std_result)
+            end
+        end
+        describe 'with array and block given' do
+            it 'returns true if the block never returns true for all elements in an array of numbers' do
+                std_result = my_array.none? { |num| num > 20}  
+                my_result = my_array.my_none? { |num| num > 20}  
+                expect(my_result).to eql(std_result)
+            end
+            it 'returns true if the block never returns true for all elements in an array of words' do
+                std_result = %w{ant bear cat}.none? { |word| word.length >= 4 }
+                my_result = %w{ant bear cat}.my_none? { |word| word.length >= 4 }
+                expect(my_result).to eql(std_result)
+            end
+        end
+    end
+
     context '#my_map' do
         describe 'for no block given' do
             it 'returns an emunerable when no block given' do
@@ -215,6 +242,7 @@ RSpec.describe Enumerable do
             end
         end
     end
+
     context '#my_count' do
         describe 'for no block given' do
             it 'returns an emunerable when no block given' do
@@ -251,6 +279,7 @@ RSpec.describe Enumerable do
             end 
         end
     end
+    
     context '#my_inject' do
         describe 'Using a block and inject' do
             it 'returns the final value of memo' do
