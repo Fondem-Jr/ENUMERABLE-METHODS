@@ -10,7 +10,7 @@ my_hash = {"a" => 100, "b" => 200}
 
 
 RSpec.describe Enumerable do
-    context 'Testing #my_each' do
+    context '#my_each' do
         describe 'for arrays' do
             it 'returns an emunerable when no block given' do
                 my_result = my_array.my_each.class
@@ -44,7 +44,7 @@ RSpec.describe Enumerable do
         end
     end
 
-    context 'Testing #my_each_with_index' do
+    context '#my_each_with_index' do
         describe 'for arrays' do
             it 'returns an emunerable when no block given' do
                 my_result = my_array.my_each_with_index.class
@@ -78,8 +78,7 @@ RSpec.describe Enumerable do
             end
         end
     end
-
-    context 'Testing #my_select' do
+    context '#my_select' do
         describe 'for no block given' do
            it 'returns an emunerable when no block given' do
             my_result = my_array.my_select.class
@@ -107,4 +106,39 @@ RSpec.describe Enumerable do
         #     end
         # end
     end
+
+    context '#my_all' do
+        describe 'for no block given' do
+            it 'returns an emunerable when no block given' do
+             my_result = my_array.my_all?
+             std_result = my_array.all?
+             expect(my_result).to eql(std_result)
+            end
+        end
+        describe 'for arrays' do
+            it 'returns true if all the objects in the array satisfies the given condition' do
+            std_result = my_array.all? { |num| num>4}
+            my_result = my_array.my_all? { |num| num>4}
+            expect(my_result).to eql(std_result) 
+            end
+        end
+    end
+
+    context '#my_map' do
+        describe 'for no block given' do
+            it 'returns an emunerable when no block given' do
+                std_result = my_array.map.class
+                my_result = my_array.my_map.class
+                expect(my_result).to eql(std_result)
+            end
+        end
+
+        describe 'for arrays' do
+            it 'returns the transformed elements in a new array' do
+            std_result = my_array.map { |num| num ** 3 }
+            my_result = my_array.my_map { |num| num ** 3 }
+            expect(my_result).to eql(std_result) 
+            end
+        end
+    end 
 end
