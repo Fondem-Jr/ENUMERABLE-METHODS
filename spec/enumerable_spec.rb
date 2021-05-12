@@ -220,4 +220,27 @@ RSpec.describe Enumerable do
             end 
         end
     end
+    context '#my_inject' do
+        describe 'Using a block and inject' do
+            it 'returns the final value of memo' do
+                std_result = (5..10).inject { |sum, n| sum + n } 
+                my_result = (5..10).my_inject { |sum, n| sum + n } 
+                expect(my_result).to eql(std_result)
+            end
+        end
+        describe 'Using a block and inject' do
+            it 'returns the final value of memo using a parameter' do
+                std_result = (5..10).inject(1) { |product, n| product * n }
+                my_result = (5..10).my_inject(1) { |product, n| product * n }
+                expect(my_result).to eql(std_result)
+            end
+        end
+        describe 'Using a block and inject to add numbers' do
+            it 'returns the final value of memo using a parameter' do
+                std_result = (5..10).inject(:+)   
+                my_result = (5..10).my_inject(:+)   
+                expect(my_result).to eql(std_result)
+            end
+        end
+    end
 end
