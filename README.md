@@ -51,7 +51,7 @@ This game is tested with Rspec(domain-specific language (DSL)) testing tool writ
 - In the terminal, type `rspec` to run the spec file
 
 ## Rspec output
-![screenshot rspec](./screenshots/rspec.png)
+![screenshot rspec](./screenshot/rspec_enumerable.png)
 
 ## Authors
 👤 **Fondem Junior**
