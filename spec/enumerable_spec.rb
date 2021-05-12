@@ -159,6 +159,37 @@ RSpec.describe Enumerable do
             end 
         end
     end
+    
+    context '#my_any' do
+        describe 'for no block given' do
+            it 'returns true if no block is given' do
+                std_result = [nil, true, 99].any?  
+                my_result = [nil, true, 99].my_any?  
+                expect(my_result).to eql(std_result)
+            end
+        end
+        describe 'for array' do
+            it 'returns true if at least one of the collection member obeys the argument' do
+                std_result = my_array.any? { |num| num < 5 } 
+                my_result = my_array.my_any? { |num| num < 5 } 
+                expect(my_result).to eql(std_result)
+            end
+        end
+        describe 'for regular expression' do
+            it 'returns false if none of the collection member obeys the argument' do
+                std_result = %w[ant bear cat].any?(/d/)
+                my_result = %w[ant bear cat].my_any?(/d/)
+                expect(my_result).to eql(std_result)
+            end
+        end
+        describe 'for nil or false member in the collection with no argument' do
+            it 'return true if at least one of the collection members is not false or nil' do
+                std_result = [nil, true, 99].any?
+                my_result = [nil, true, 99].my_any?
+                expect(my_result).to eql(std_result)
+            end
+        end
+    end
 
     context '#my_map' do
         describe 'for no block given' do
