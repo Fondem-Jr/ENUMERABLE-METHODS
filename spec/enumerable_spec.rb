@@ -135,8 +135,8 @@ RSpec.describe Enumerable do
             std_result = my_array.all? { |num| num>4}
             my_result = my_array.my_all? { |num| num>4}
             expect(my_result).to eql(std_result) 
+            end
         end
-    end
         describe 'for regular expressions' do
             it 'returns true if all words in the array satisfies the regular expression' do
                 std_result = %w[ant bear cat].my_all?(/t/) 
