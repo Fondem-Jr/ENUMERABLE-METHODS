@@ -277,10 +277,10 @@ RSpec.describe Enumerable do
   end
 
   context '#my_multiply_els' do
-      describe 'Using inject to multiply numbers' do
-        it 'ruturns the multiple of the array' do
-           expect(multiply_els(my_array)).to eq(3628800)
-        end
+    describe 'Using inject to multiply numbers' do
+      it 'ruturns the multiple of the array' do
+        expect(multiply_els(my_array)).to eq(3_628_800)
       end
+    end
   end
 end
